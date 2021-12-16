@@ -1,0 +1,16 @@
+integer fibbonacci(integer n):
+   is n == 0 :
+      answer 0
+
+   is n == 1 :
+      answer 1
+
+   answer (fibbonacci(n-1) + fibbonacci(n-2))
+
+start():
+   intege n = 5
+   
+   display "Fibbonacci of ", n
+
+   from 0 to n-1:
+      display fibbonacci(i)

@@ -1,0 +1,14 @@
+lang_name: modified txt
+lang_id: txt
+file_ext: txt
+desc: boh!
+keywords:
+  - name: JavaScript
+    det: JavaScript detail
+    doc: JavaScript documentation
+  - name: TypeScript
+    det: TypeScript detail
+    doc: TypeScript documentation
+  - name: CoffeeScript
+    det: CoffeeScript detail
+    doc: CoffeeScript documentation

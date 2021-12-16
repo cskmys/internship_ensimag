@@ -1,0 +1,21 @@
+ipdir: rsrc
+opdir: out
+list:
+  -
+    file: all/replaceAll.txt
+    words:
+      - ADJECTIVE
+      - NOUN
+      - VERB
+  -
+    file: adj/replaceAdj.txt
+    words:
+      - ADJECTIVE
+  -
+    file: noun/replaceNoun.txt
+    words:
+      - NOUN
+  -
+    file: verb/replaceVerb.txt
+    words:
+      - VERB

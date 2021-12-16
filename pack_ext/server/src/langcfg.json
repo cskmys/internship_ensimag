@@ -1,0 +1,28 @@
+{
+    "lang_name": "modified txt",
+    "lang_id": "txt",
+    "file_ext": "txt",
+    "desc": "boh!",
+    "keywords": [
+        {
+            "name": "javascript",
+            "det": "JavaScript detail",
+            "doc": "JavaScript documentation"
+        },
+        {
+            "name": "typescript",
+            "det": "TypeScript detail",
+            "doc": "TypeScript documentation"
+        },
+        {
+            "name": "coffeescript",
+            "det": "CoffeeScript detail",
+            "doc": "CoffeeScript documentation"
+        },
+        {
+            "name": "mochascript",
+            "det": "MochaScript detail",
+            "doc": "MochaScript documentation"
+        }
+    ]
+}

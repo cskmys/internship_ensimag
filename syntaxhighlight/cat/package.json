@@ -1,0 +1,35 @@
+{
+    "name": "cat",
+    "displayName": "cat_syntax_highlight",
+    "description": "cat language syntax highlighter",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.44.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [
+            {
+                "id": "cat",
+                "aliases": [
+                    "cat",
+                    "cat"
+                ],
+                "extensions": [
+                    ".cat"
+                ],
+                "configuration": "./language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "cat",
+                "scopeName": "source.cat",
+                "path": "./syntaxes/cat_syntax.tmLanguage"
+            }
+        ]
+    },
+    "dependencies": {}
+}

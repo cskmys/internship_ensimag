@@ -1,0 +1,28 @@
+ipdir: rsrc
+opdir: out
+list:
+  -
+    file: lsp/package.json
+    words:
+      - lang_name
+      - auth
+      - ver
+      - repo_type
+      - repo_url
+      - lang_id
+  -
+    file: lsp/syntaxes/syntax.tmLanguage
+    words:
+      - lang_id
+      - keyword_lst_regex
+  -
+    file: lsp/client/src/extension.ts
+    words:
+      - lang_id
+  -
+    file: lsp/README.md
+    words:
+      - lang_name
+      - desc
+      - lang_id
+      - keyword_lst_regex

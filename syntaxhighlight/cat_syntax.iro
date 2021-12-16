@@ -1,0 +1,70 @@
+name = cat
+file_extensions [] = cat;
+background_color = white
+color = black
+
+contexts[] {
+   main : context {
+      : pattern {
+         regex \= (cat|room)
+         styles[] = .keyword;
+      }
+      : push {
+         regex         \= (")
+         styles []      = .quoted;
+         context []     = inside_quotes;
+      }
+      : inline_push {
+         regex \= (\')
+         styles [] = .singlequoted;
+         default_style = .singlequoted
+         : pop {
+            regex \= (\')
+            styles [] = .singlequoted;
+         }
+      }
+   }
+   inside_quotes : context {
+      : pop {
+         regex \= (")
+         styles [] = .quoted;
+      }
+      : inline_push {
+         regex \= (\')
+         styles [] = .singlequotedinside;
+         default_style = .singlequotedinside
+         : pop {
+            regex \= (\')
+            styles [] = .singlequotedinside;
+         }
+      }
+      : pattern {
+         regex \= (.)
+         styles [] =.quoted;
+      }
+   }
+}
+
+styles [] {
+.keyword : style {
+   color     = "blue";
+   textmate_scope        = keyword
+}
+.quoted : style { 
+   color = "red";
+   textmate_scope        = string
+}
+.singlequoted : style {
+   color = "green";
+   textmate_scope        = comment
+}
+.singlequotedinside : style {
+   color = "grey";
+   textmate_scope        = invalid
+}
+}
+
+// textmate_scope mandatory. You can find the list in the scratchpad.adoc/online at https://gist.github.com/vivainio/b89bd60a3f2c7bbb31f7e149d6cb8806
+
+// Test string
+// The cat entered the room and said, "I am the best cat.". He should have said "I am just a 'humble' cat". But, sure humble he 'was'.

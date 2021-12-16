@@ -1,0 +1,25 @@
+{
+    "name": "txt",
+    "displayName": "txt syntax highlight",
+    "description": "boh",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.45.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "txt",
+            "aliases": ["modified txt", "txt"],
+            "extensions": [".txt"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "txt",
+            "scopeName": "source.txt",
+            "path": "./syntaxes/txt_syntax.tmLanguage"
+        }]
+    }
+}

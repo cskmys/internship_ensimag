@@ -1,0 +1,32 @@
+lang_name: myc # dont use _ or whitespace in name
+auth: csk
+ver: 0.0.0
+repo_type: git
+repo_url: https://gitlab.inria.fr/veriamos/langtooling
+lang_id: myc # this will be used as file extension, dont give any whitespaces
+desc: Here is the LSP automatically generated via our tool!
+keywords:
+  - name: integer
+    det: c int
+    doc: Same as int in c
+  - name: character
+    det: c char
+    doc: Same as char in c
+  - name: display
+    det: c print
+    doc: display output on the console
+  - name: from
+    det: c for
+    doc: for loop initialization
+  - name: to
+    det: c for
+    doc: for loop check
+  - name: answer
+    det: c return
+    doc: Same as return in c
+  - name: is
+    det: c if
+    doc: Same as if in c
+  - name: start
+    det: c main
+    doc: Same as main in c

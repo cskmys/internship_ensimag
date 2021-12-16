@@ -1,0 +1,886 @@
+= Scratchpad
+
+One stop place for everything related to vs code extensions: https://code.visualstudio.com/api
+
+In case of any issues while running any commands/installations, do check once the *Annoying Bugs* section.
+
+First complete the setup and then go on to other sections.
+
+== Setup
+=== Node
+* Prerequisite
++
+----
+sudo apt install build-essential
+----
++
+----
+sudo apt-get install gcc g++ make
+----
+* Install Node
++
+----
+curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+sudo apt-get install -y nodejs
+----
+* Config Node
++
+----
+mkdir ~/.npm-global
+----
++
+----
+npm config set prefix '~/.npm-global'
+----
++
+[WARNING]
+====
+In the command below, be sure to use the *>>*(append operator) instead of *>*(truncate operator) to write to the *.bashrc* file.
+====
++
+----
+echo "export PATH=\"~/.npm-global/bin:\$PATH\"" >> ~/.bashrc
+----
++
+----
+source ~/.bashrc
+----
+
+=== PYTHONPATH
+[WARNING]
+====
+Upon every major update of main python package, you may need to do this
+====
+* Figure out your PYTHONPATH:
++
+----
+gdb -q -ex "python print(sys.path)"
+----
+** You'll see an output for example:
++
+----
+['/usr/share/gdb/python', '/usr/lib/python37.zip', '/usr/lib/python3.7', '/usr/lib/python3.7/lib-dynload', '/home/csk/.local/lib/python3.7/site-packages', '/usr/local/lib/python3.7/dist-packages', '/usr/lib/python3/dist-packages']
+----
+* check if your system has a *PYTHONPATH* variable
+** If it does, when you do:
++
+----
+echo $PYTHONPATH
+----
+** You should see whatever you obtained in the 1st command but with a *:* as seperator instead of *,* as in 1st commands output
++
+----
+/usr/share/gdb/python:/usr/lib/python37.zip:/usr/lib/python3.7:/usr/lib/python3.7/lib-dynload:/home/csk/.local/lib/python3.7/site-packages:/usr/local/lib/python3.7/dist-packages:/usr/lib/python3/dist-packages
+----
+** If you do, you can skip this subsection. If you dont continue reading.
+
+* Create a string of environment variable(PYTHONPATH) containing the paths from the 1st command's output and write it to *.bashrc*:
++
+[WARNING]
+====
+In the command below, be sure to use the *>>*(append operator) instead of *>*(truncate operator) to write to the *.bashrc* file.
+====
++
+----
+echo "export PYTHONPATH=/usr/share/gdb/python:/usr/lib/python37.zip:/usr/lib/python3.7:/usr/lib/python3.7/lib-dynload:/home/csk/.local/lib/python3.7/site-packages:/usr/local/lib/python3.7/dist-packages:/usr/lib/python3/dist-packages" >> ~/.bashrc
+----
+* Now update current session to take new environment variables:
++
+----
+source ~/.bashrc
+----
+* Now, if you do:
++
+----
+echo $PYTHONPATH
+----
+* You should see whatever you wrote into *.bashrc*:
++
+----
+/usr/share/gdb/python:/usr/lib/python37.zip:/usr/lib/python3.7:/usr/lib/python3.7/lib-dynload:/home/csk/.local/lib/python3.7/site-packages:/usr/local/lib/python3.7/dist-packages:/usr/lib/python3/dist-packages
+----
+
+=== Packages
+==== Node
+[NOTE]
+====
+Command to install the packages
+----
+npm install -g <package name>
+----
+====
+[options="header"] 
+.Packages to be installed
+|===
+|Package Name |Comment
+|yo |project generator
+|generator-code |code generator
+|vscode-textmate |textmate parser for vscode to provide syntax highlighting using tmLanguage files
+|yarn |required to resolve dependencies for mock debugger
+|typescript |compile typescript
+|vsce |easily package and publish extensions
+|===
+[IMPORTANT]
+====
+If in case any of the above package installation fails, try to install them through *yarn*:
+----
+yarn add global <package name>
+----
+====
+==== Python
+[NOTE]
+====
+Command to install the packages
+----
+pip3 install <package name>
+----
+====
+[options="header"] 
+.Packages to be installed
+|===
+|Package Name |Comment
+|pexpect |automate interaction with shell programs
+|pyyaml |work with yaml files
+|===
+
+=== VCS(Git)
+The steps below should work for any git based vcs.
+[NOTE]
+====
+Only for ensimag gitlab:
+----
+sudo echo -n | openssl s_client -showcerts -connect gitlab.ensimag.fr:443 2>/dev/null | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-certificates.crt
+----
+
+There's an issue with certificate used by ensimag's gitlab, hence, you need to run the above command to allow your git to talk to ensimag's gitlab. 
+====
+* Install git
++
+----
+sudo apt install git
+----
+* Setting up vscode
+** Install Git graph extension
+
+== User Manuals
+=== Using Git in vscode
+
+==== Setting up new project
+* Create project by adding base file
+* Create repo on git and note its url: https://<gitaddress>/<projectname>.git
+* Menu > View > SCM > + > <folder name> (in command palette) or Menu > View > SCM > In Git dialog > Initialize repository
+* Click Git Graph icon besides Panel
+* Click setting > Repository Settings > 
+* Add User > User Details > Name and User Email(uncheck Global thingy)
+* Remote Configuration > Add Remote > Name: origin, Fetch URL: https://<gitusername>:<gitpassword>@<gitaddress>/<projectname>.git, Push URL: <blank>
+* ...(on right of side panel) > Commit All changes and type commit message in Command palette
+* ... > Push > select Ok to Publish Branch on upstream
+
+==== Create a branch
+* ... > Checkout to... > + Create new branch(in Command palette) > type Branch name
+* ... > Push > select Ok to Publish Branch on upstream
+
+==== Editing a branch
+* ... > Checkout to... > origin/<branchname>
+* edit files
+* ... > Commit all >  Always to automatically stage all changes and then commit always > Commit message(command palette)
+* ... > Push
+
+==== Merging branch to master
+* ... > Checkout to... > origin/master
+* Menu > View > SCM > Git Graph (icon besides Panel) > Git Graph(tab) > right click on <branchname>|origin > Merge into current branch... > Ok
+* ... > Push
+
+==== Creating tag from master
+* ... > Checkout to... > origin/master
+* Menu > View > SCM > Git Graph (icon besides Panel) > Git Graph(tab) > Select master|origin(click beside the label rather than on it), you should see a dropdown having info about commit
+* right click > Add Tag > Add Tag to Commit(dialog) > Name: <tagName> > select checkbox Push to remote > Click Add Tag
+
+==== Getting existing project
+* Menu > View > SCM > + > <folder name> (in command palette) or Menu > View > SCM > In Git Panel > Initialize repository
+* Click Git Graph icon besides Panel
+* Click setting > Repository Settings > 
+* Add User > User Details > Name and User Email(uncheck Global thingy)
+* Remote Configuration > Add Remote > Name: origin, Fetch URL: https://<gitusername>:<gitpassword>@<gitaddress>/<projectname>.git, Push URL: <blank>
++
+[NOTE]
+====
+If you get any prompt saying fetch failed, just *dimiss* it.
+====
+* Press the refresh button in panel
+* ... > Checkout to... > origin/master
+
+=== Using ADOC on vscode
+* Install AsciiDoc extension
+* Create and edit your adoc document
++
+[NOTE]
+====
+You can refer https://powerman.name/doc/asciidoc for quick syntax and examples which should suffice for most(if not all) of the documentation.
+====
+* Do Ctrl-Shift-V to open the live preview
+* Open a split view and move the live preview tab to split view
+
+=== Using Latex on vscode
+* Install linux packages: texLive, latexmk, chktex, texlive-bibtex-extra, biber, plantuml, texlive-luatex, texlive-pictures, texlive-latex-extra, python3-pygments, python-pygments
+* Set PLANTUML_JAR:
+** Find the location of plantuml.jar file:
++
+----
+sudo find / -name "plantuml.jar"
+----
+** Pick the proper output
+*** For example:
++
+----
+/usr/share/plantuml/plantuml.jar
+----
+** Set it as global environment variable
+*** Create a shell script in */etc/profile.d/* and set PLANTUML_JAR in that to output above using export
+**** For example:
++
+----
+sudo echo "export PLANTUML_JAR=/usr/share/plantuml/plantuml.jar" | sudo tee -a /etc/profile.d/plantuml-jar.sh > /dev/null
+----
+* Install vscode extension: latex-workshop
+* Setup latex-workshop:
+** File > Preferences > Settings and type *latex-workshop.latex.recipes* > *Edit in settings.json*
+** Add to the file contents by contents below:
++
+----
+{
+    "latex-workshop.view.pdf.viewer": "tab",
+    "latex-workshop.latex.recipes": [
+        {
+            "name": "lualatex->biber->lualatex * 2",
+            "tools": [
+                "lualatex",
+                "biber",
+                "lualatex",
+                "lualatex"
+            ]
+        }
+    ],
+    "latex-workshop.latex.tools": [
+        {
+            "name": "lualatex",
+            "command": "lualatex",
+            "args": [
+                "-synctex=1",
+                "-interaction=nonstopmode",
+                "-file-line-error",
+                "--output-format=pdf",
+                "--shell-escape",
+                "%DOC%"
+            ]
+        },
+        {
+            "name": "biber",
+            "command": "biber",
+            "args": [
+                "%DOCFILE%"
+            ]
+        }
+    ]
+}
+----
+* add to *.gitignore*
++
+----
+*.synctex.gz
+*.pdf
+*.aux
+*.bcf
+*.log
+*.run.xml
+*.bbl
+*.blg
+*-plantuml.txt
+----
++
+[NOTE]
+====
+For now, pdf are not archived
+====
+* Create a *.tex* file and type an example file like:
++
+----
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{plantuml}
+\usepackage{biblatex}
+\addbibresource{biblatex-examples.bib}
+
+\AtBeginDocument{%
+  \DeclareFontShape{TU}{lmr}{m}{scit}{<->ssub*lmr/m/scsl}{}%
+}
+
+\begin{document}
+
+\title{Introduction to \LaTeX{}}
+\author{Author's Name}
+
+\maketitle
+
+\begin{abstract}
+The abstract text goes here.
+\end{abstract}
+
+\section{Introduction}
+Here is the text of your intro.
+
+\begin{equation}
+    \label{simple_equation}
+    \alpha = \sqrt{ \beta }
+\end{equation}
+
+\subsection{Subsection Heading Here}
+Write your subsection text here.
+\begin{figure}
+\begin{plantuml}
+    @startuml
+    Alice -> Bob: Hello
+    Alice <- Bob: Hi!
+    @enduml
+\end{plantuml}
+\caption{example caption}
+\end{figure}
+
+\section{Conclusion}
+Write your conclusion here.
+
+\nocite{*}
+\printbibliography
+\end{document}
+----
+* Click on *TEX* button in the left
+* Double click, In Commands Panel > View Latex PDF
+* Another tab that shows the preview must be opened
+** You should be able to see equation, uml and example references
++
+[WARNING]
+====
+Due to autosave and autobuild i,e, build on save, the incomplete text can get compiled as you type. Hence, you may see notifications saying compilation failed. Ignore all of them and close old notifications and just wait for a while after finishing typing. If you see any new compilation errors, then you need to check and rectify it. 
+====
+* You can use split view to have the preview window side by side to the tex file
+
+=== Running typescript code on pycharm
+* create a file with *.ts* extension
+* if prompted to install a plugin, install it
+* compile typescript
++
+----
+ tsc --resolveJsonModule --esModuleInterop main.ts
+----
+* run javascript
++
+----
+node main.js
+----
+
+== Work
+=== 'Hello world' of extension
+Hello world of extension: https://code.visualstudio.com/api/get-started/your-first-extension
+
+* Creating extension
+** Go to your working directory
++
+[NOTE]
+====
+If you just checked out the repo and not newly creating the project, you can directly go to *Running the extension* section but make sure that you close the vscode and open it again with *./bonjour/bonjour* as the current working directory
+====
+** Execute
++
+----
+yo code
+
+# ? What type of extension do you want to create? New Extension (TypeScript)
+# ? What's the name of your extension? Bonjour
+# ? What's the identifier of your extension? bonjour
+# ? What's the description of your extension? boh!
+# ? Initialize a git repository? Yes
+# ? Which package manager to use? npm
+----
+
+* Editing the extension
+** Open the directory 'bonjour'<project name> generated within your working directory in vs code
++
+----
+code ./bonjour
+----
+** Edit welcome message
+*** In *src/extension.ts* add your message in the function call:
++
+----
+vscode.window.showInformationMessage('Bonjour');
+----
+** Edit the invoking command
+** In *src/extension.ts* in the function call:
++
+----
+vscode.commands.registerCommand('extension.bonjour', ....
+----
+** In *package.json* in activationEvents
++
+----
+"activationEvents": [
+		"onCommand:extension.bonjour"
+	],
+----
++
+----
+"commands": [
+			{
+				"command": "extension.bonjour",
+				"title": "bonjour"
+			}
+		]
+----
+* Running the extension
++
+[WARNING]
+====
+If you have checked out the code from repo and not creating it newly, dont forget to do:
+----
+npm install
+----
+once you do this, you should see *node_modules* and *out* folder created(you need not add these two to repo).
+====
+** Run the extension code. In Menu: Run > Start Debugging. This should open a new *Extension Development Host* window
+** In the new window, go to Menu: View > Command Palette and type
++
+----
+> bonjour
+----
+** You should see a pop-up at the lower right part of the window
++
+----
+Bonjour!
+----
+* Next steps:
+** After running your 1st extension go to: https://code.visualstudio.com/api/get-started/wrapping-up to get clarity on which direction to proceed next.
+
+** Goto https://code.visualstudio.com/api/language-extensions/overview for language related implementation
++
+[WARNING]
+====
+LSP doesnt cover syntax highlighting
+====
+
+=== Syntax Highlighting
+
+Since there's no LSP support, we use a popular and widely supported format called textmate grammar.
+
+[NOTE]
+====
+If you just checked out the repo and not newly creating the project, you can directly go to *Running the extension* section but make sure that you close the vscode and open it again with *./syntaxhighlight/cat* as the current working directory
+====
+
+* Creating textmate grammar file
+** Go to https://eeyo.io/iro/
+** In the text editor define all the rules, compile, test and copy the textmate grammar output to a file with file extension '.tmLanguage'
++
+[WARNING]
+====
+Though the file compiles without textmate scope, dont miss providing it.  You can find the list online at https://gist.github.com/vivainio/b89bd60a3f2c7bbb31f7e149d6cb8806
+====
++
+[NOTE]
+====
+In git you can find the file with *.iro* file for a mock cat language. 
+====
++
+[IMPORTANT]
+====
+Much of the rule-defining for syntax coloring will invole regular expression. You can use tools online to check/test out your regular expression before adding them to text editor in iro's website.
+====
+* Creating extension
+** Go to your working directory
+** Execute
++
+----
+yo code
+
+# ? What type of extension do you want to create? New Language Support
+# ? URL or file to import, or none for new? <path/to/tmLanguage file>
+# ? What's the name of your extension? cat syntax
+# ? What's the identifier of your extension? cat
+# ? What's the description of your extension? boh!
+# ? Language id: cat
+# ? Language name: cat
+# ? File extensions: .cat
+# ? Scope names: source.cat
+----
+
+* Running the extension
+** Open the directory 'cat'<project name> generated within your working directory in vs code
+** Run the extension code. In Menu: Debug > Start Debugging. This should open a new *Extension Development Host* window
+** Create a file with extension '.cat' and start typing.
++
+[NOTE]
+====
+Create it wherever you want(even outside the repo folder) but to illustrate we have a *tst* folder with *cat.cat* file, so you can open that folder within the extension development host window.
+====
++
+[TIP]
+====
+Test string:
+----
+The cat entered the room and said, "I am the best cat.". He should have said "I am just a 'humble' cat". But, sure humble he 'was'.
+----
+illustrates all the rules defined in the *.tmLanguage* file generated online via *.iro* file
+====
+* Checking the execution
+** Go to Menu: View > Command Palette and type
++
+----
+> Developer: Inspect editor tokens and scopes
+----
+** Now whenever you hover over a text, you can see it's scope. You can use this scope to validate if the words in your string are interpreted by vscode as you expected it to.
+
+=== lsp-sample
+The *lsp-sample* provided in the extension samples by microsoft contiains both the server and client code in the same project. When you run the client, it launches the server in a seperate process in the background. 
+
+The provided example works with a text file and does very basic stuff:
+
+* Provide auto-completion for words: *Typescript* and *Javascript*. 
+* If a word more than 2 letter long has all the characters in uppercase, it will be highlighted via squigles
+
+Far more advanced things can be done with vscode's APIs:
+
+* __vscode.languages.*__: These apis are direct way to implement things into vscode. It's quick and easy but it has nothing to do with the LSP. Hence, there's no cross-compaitbility and it's of no use for us.
+*  __vscode.languageserver.*__: These apis allow us to build a language server with all the features according to LSP. Hence, this is of use to us.
+
+[NOTE]
+====
+For more details go to: https://code.visualstudio.com/api/language-extensions/programmatic-language-features
+This link contains how to implement various features using both the approaches mentioned above.
+====
+
+[IMPORTANT]
+====
+*Incremental Text Document Synchronization* is important for performance reasons.
+
+You can find more about it here: https://code.visualstudio.com/api/language-extensions/language-server-extension-guide#incremental-text-document-synchronization
+====
+
+==== Running lsp-sample
+* Setting up the sample
++
+----
+> git clone https://github.com/Microsoft/vscode-extension-samples.git
+> cd vscode-extension-samples/lsp-sample
+> npm install
+> npm run compile
+> code .
+----
+* Debugging Client
+** Put your breakpoints in client code: *client/src/extension.ts*
+** View > Run > select *Launch Client* configuration.
+** Run > Start Debugging
+** You should see a small tab with buttons open at the top in the vscode window where you launched the client and you should see another vscode the extension development host open
+** Create/open a file with *.txt* extension and you can start typing in it. Refer previous section to know the capabilities of the server.
+* Debugging Server
++
+[WARNING]
+====
+1st make sure that client is launched using steps mentioned above.
+====
+** Put your breakpoints in server code: */server/src/server.ts*
+** View > Run > select *Attach to Server* configuration.
+** Run > Start Debugging
+** In the small tab that with buttons, that opened while launching client, now you'll see a drop down which you can use to choose the client or the server configuration to use the buttons with.
+* Log communication with the server:
+** At the root (not inside the server/client) folder, package.json >  "contributes" > "configuration" > "properties" > "languageServerExample.trace.server" > "default": "verbose"
+** Start the client using the steps mentioned above
+** In the extension host development window > View > Output > Language Server Example
+** Now you should start seeing the logs.
+** Copy and save the output to a file
++
+[NOTE]
+====
+You can find an example log in *tst/lsp_example_client.log*
+====
+* Analyze logs:
+** Go to https://microsoft.github.io/language-server-protocol/inspector/
+** App tab and upload your log
+** You can now see all the transaction between server and client
+
+=== Debugger Adapter Protocol
+
+Refer: https://code.visualstudio.com/blogs/2018/08/07/debug-adapter-protocol-website#_why-the-need-for-decoupling-with-protocols
+
+[NOTE]
+====
+Look closely the gdb example diagram, you'll get better idea.
+====
+
+[IMPORTANT]
+====
+DAP uses a JSON-based wire-format inspired by the (now obsolete) V8 Debugging Protocol but *not the JSON-RPC used in the LSP*.
+
+Current DAP is at v1.4. At v2.0, it's expected to adapt JSON-RPC like LSP.  
+====
+
+Here IDE is the client and Debugger Adapter:DA is the server(both talking over a port/stdin n stdout) that translate's DAP to/from data in the form understandable to backend debugger
+
+Starting and termination of DA slightly different for starting the debugger(DA launches the program)/attaching the debugger(DA attaches to a running program).
+
+DAs are independent from VS Code. Hence, their architecture doesn't follow VS code to provide contribution points etc.
+Therefore, VS Code provides a contribution point, *debuggers*, where a DA can be contributed under a specific debug type (e.g. node for the Node.js debugger). VS Code launches the registered DA whenever the user starts a debug session of that type.
+
+So, a debugger extension to VS code is aleast just a debug adapter implementation(for a debugger), that basically is a packaging container for the debug adapter without any additional code. In other words, DA need not contain Debugger.
+
+[NOTE]
+====
+This is key distinction between LS and DA. LS contains AST inside and talks using LSP. DA talks to Debugger via stdout/stdin or some port using the format that debugger understands and talks to Dev tools using DAP. Therefore, on DA can make a debugger compatible across IDEs. 
+====
+
+=== Mock debugger adapter example
+
+Since starting on an actual DA will be bit too much, Microsoft recommends starting understanding DA using their a mock DA.
+It's just a way to simulate DA for a md file. No debugging here, but to show stepping through line by line and examining contents of lines etc. This mock DA contains inside the 'debugger' for md file. We need not worry about that for us what's important is that Mock DA talks to VS Code using DAP.
+
+1st they recommend that we use their extension from the market place to get a feel of what it is and then go ahead to build one for ourselves via their skeleton code.
+
+==== Mock DA preview run
+* Open in vscode a folder having just one *.md* file inside
++
+[NOTE]
+====
+If you are checking out the code from repo, go to *./mock_da_ext_run/*
+====
+* Install the mock debug extension from VS Code marketplace. You can search for *mock* in the extension view right here within vscode.
+* Press *F5* and choose *Mock Debug* in the command palette
+* *Debugging* starts and then you can use the buttons, see the call stack etc.
+
+==== Mock DA development setup
+[IMPORTANT]
+====
+Make sure that you have not installed the mock debug extension before continuing. In case you do, *uninstall* it.
+====
+
+* Do
++
+----
+git clone https://github.com/Microsoft/vscode-mock-debug.git
+cd vscode-mock-debug
+yarn
+code .
+----
+* Build the code using *Ctrl + Shift + B*
+* Run the code using *F5* and Extension Development Host is opened
+* Now, Create a *.md* file.
++
+[NOTE]
+====
+If you are checking the code from repo, you can use: *tst/mock_da.md*
+====
+* You can use the DA in the extension development host by pressing *F5* in extension development host and choosing *Mock Debug* in the command palette
++
+[NOTE]
+====
+With this way of launching you can just put breakpoints in *extension.ts*. Since not much is happening in *extension.ts*, it's not very interesting for us. To debug the DA, you need to run it as server.
+====
+* You can use the mock debugger in the extension development host, and close it. But, if you want to debug the DA, before using the mock debugger go to run view of base vscode (the one which launched extension development host), and choose the *Server* configuration and click the play button.
+* Now you should see a drop down menu besides the debug buttons at appears at the place where normally command palette appears in the base vscode. Now you can place breakpoints in the DA code i,e, *mockDebug.ts* or in the debugger code i,e, *mockRuntime.ts*
++
+[TIP]
+====
+An interesting excercise that you can do under this configuration is:
+Before launching the mock DA in extension development host, put breakpoint in it's *.md* file, place a breakpoint within *mockDebug.ts*(within *setBreakPointsRequest* function) and *mockRuntime.ts*(within *setBreakPoint* function) in base vscode. Launch the mock Debug and let the fun begin!
+====
++
+[NOTE]
+====
+A faster way is to reach final step to debug the DA is to choose *Extension+Server* mode right within base vscode.
+====
+
+===== Code walkthrough
+* *mockRuntime.ts* conatins code of a *.md* debugger, it mocks the debugger that your actual DA would have to talk to.
+* *mockDebug.ts* contains code of actual DA that calls the functions from *mockRuntime.ts* while talking to vs code in DAP. 
+* Normally, an *extension.ts* file is used to open the debugger in a different process etc. Here, since the debugger is part of DA, it's actually not needed, but its given just to illustrate what would be possible.
+
+[NOTE]
+====
+For actual DA, we need to modify *mockDebug.ts* and (especially) *mockRuntime.ts* with code that talks to 'actual' debugger.
+====
+
+=== Python GDB
+Python code can be used to perform calls. This essentially means that now we can use our favourite language to debug code using gdb rather than pesky gdb commands.
+
+The idea is to use *gdb* module from within python script to call *gdb.execute*, whose argument is the regular gdb command. Hence, it's like a python wrapper for gdb commands. 
+
+[NOTE]
+====
+If you are checking out the code from repo, all this can be found in */py_gdb/gdb_py.py* file.
+====
+All one needs to do, to add new functionality is to figure out once the gdb command and write your python api. From then onwards you have the power and convinience of python with you.
+
+[WARNING]
+====
+If you try to run the script like a normal python script you'll get an import error since 
+----
+import gdb
+----
+works only when it's called from python code running within GDB process.
+====
+
+Steps:
+
+* Write and compile c or c++ program
++
+[NOTE]
+====
+If you are checking out the code from repo, use: */py_gdb/Makefile* to compile */py_gdb/main.c* file 
+====
+* Write your testing script using calls from *gdb_py.py* by importing it as a module inside your test script.
++
+[NOTE]
+====
+If you are checking out the code from repo, you can refer to: */py_gdb/test_py_gdb.py*
+====
++
+[TIP]
+====
+Put the test script and *gdb_py.py* in same folder to keep things simple.
+====
+* Updating *PYTHONPATH* environment variable for test script
+** Example(for me script location is at:/home/csk/etudes/m1intship/tp/svn/py_gdb/):
++
+----
+export PYTHONPATH=/home/csk/etudes/m1intship/tp/svn/py_gdb/:$PYTHONPATH
+----
++
+[NOTE]
+====
+This way, the script location in the environment variable is lost once you close the terminal. To make it permanent,
+you can do:
+----
+echo "export PYTHONPATH=\"/home/csk/etudes/m1intship/tp/svn/py_gdb/:\$PYTHONPATH"\" >> ~/.bashrc
+----
+But, again, be careful and dont use *>* instead of *>>* in the command.
+If you keep, changing your working directory for the python script, this is not recommended, but if you don't, you can consider making this permanent change.
+====
+* Now with your script location as present working directory, execute:
++
+----
+gdb --command=./<test python script> ./<path to your binary>
+----
+* Now you should see a prompt from gdb, press enter and now your python script do it's magic!
+
+[WARNING]
+====
+When you run you c/c++ program's executable in this manner, executable's output can't be seen on the console only python scripts output can be seen. 
+====
+
+=== Automate interaction with any command line program
+* You can refer example in folder *auto_shell* to understand usage of pexpect
+* You can run *parent.py* to observe the behavior
+
+=== Working with packaged extensions
+==== Installing extension from vsix file
+* In the directory containing the *.vsix* file, do
++
+----
+code --install-extension <extension file name>.vsix
+----
+
+==== Uninstalling extension installed from vsix file
+* Find out the ext id by
++
+----
+code --list-extensions
+----
+** You'll see the extension id in the format:
++
+----
+<publisher>.<extension name>
+----
+* Do
++
+----
+code --uninstall-extension <extension-id>
+----
+
+=== Quick n Dirty experiments
+
+==== Deploying LSP extension
+* copy the lsp-sample folder to location where extensions reside
+** For example, in my PC:
++
+----
+~/.vscode/extensions/
+----
+* Now whenever you open a txt file in normal vscode you get features of the lsp-sample example
+
+==== Integrating LSP example and syntax highlighting
+*  Within the lsp sample, create a folder called *syntaxes* and drop the tmLanguage file for the file extension *txt* for which the lsp runs
+* Within *package.json* in the root of the lsp-example:
+** In *activationEvents*, replace the language name *plainText* by 
++
+----
+    "activationEvents": [
+		"onLanguage:txt"
+	],
+----
+** In the *contributes*, drop down the following lines:
++
+----
+		"languages": [{
+            "id": "txt",
+            "aliases": ["modified txt", "txt"],
+            "extensions": [".txt"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "txt",
+            "scopeName": "source.txt",
+            "path": "./syntaxes/txt_syntax.tmLanguage"
+        }]
+
+----
++
+[NOTE]
+====
+Don't forget to put a comma after the braces for *configuration* subsection within the *contributes* main section before appending the lines above.
+This is a syntactical requirement of json.
+====
+** In *client/src/extension.ts*, in function *activate*, variable *LanguageClientOptions*, change *language* parameter in *documentSelector*:
++
+----
+	documentSelector: [{ scheme: 'file', language: 'txt' }],
+----
+* Compile the extension, by executing at root of lsp sample:
++
+----
+npm install
+----
+* Now whenever lsp sample is run, the syntax grammar is applied automatically along with lsp features
+
+==== Packaging extension
+* Edit *package.json* at root of extension folder
+** change *publisher* name to anything other than *vscode-samples*
+* In the root of extension folder run
++
+----
+vsce package
+---- 
+* Now you'll get a file with file name as follows:
++
+----
+<name>-<version>.vsix
+----
++
+[NOTE]
+====
+The name and version of the extension generated is taken from *name* and *version* fields from *package.json* at root of extension folder
+====
++
+[WARNING]
+====
+The extension name shouldn't contain characters like underscore *_*
+====
+
+== Annoying Bugs
+None, as of now ;-)
